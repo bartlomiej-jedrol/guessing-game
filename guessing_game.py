@@ -1,45 +1,53 @@
-import random
+from random import randint
 from art import logo
 
-def guessing_game():
-    """Play a guessing game"""
+EASY_LEVEL_ATTEMPTS = 10
+HARD_LEVEL_ATTEMPTS = 5
+
+def set_attempts(difficulty):
+    """Returns number of attempts based on the selected difficulty."""
+    if difficulty == "easy":
+        return EASY_LEVEL_ATTEMPTS
+    elif difficulty == "hard":
+        return HARD_LEVEL_ATTEMPTS
+
+def check_answer(guess, answer, attempts):
+    """Checks if guess equals to answer and prints a result. Returns an actual number of attempts."""
+    if guess == answer:
+        print(f"You got it! The answer was {answer}.")
+        return attempts-1
+    elif guess > answer:
+        print("Too high.")
+        return attempts-1
+    elif guess < answer:
+        print("Too low.")
+        return attempts-1
+
+def play_game():
+    """Plays a guessing game."""
+    # Display welcome message.
     print(logo)
     print("Welcome to the Number Guessing Game!")
 
-    # Get random number between 1 and 100.
-    random_number = random.randint(1, 100)
-    print("I'm thinking of a number between 1 and 100")
+    # Set answer as a random number between 1 and 100.
+    answer = randint(1, 100)
+    print("I'm thinking of a number between 1 and 100.")
 
-    # Determine difficulty.
-    attempts_left = 0
     difficulty = input("Choose a difficulty. Type 'easy' or 'hard': ")
-    if difficulty == "easy":
-        attempts_left = 10
-    elif difficulty == "hard":
-        attempts_left = 5
-    else:
-        attempts_left = 0
+    attempts = set_attempts(difficulty)
 
-    is_guessed = False
-    # Check if guessed until the user has the attempts left. 
-    while attempts_left > 0 and not is_guessed:
-        print(f"You have {attempts_left} attempts remaining to guess the number.")
-        attempts_left -= 1
-        
+    guess = 0
+    # Attempt until the user guessed and has no attempts left.
+    while guess != answer and attempts > 0:
+        print(f"You have {attempts} attempts remaining to guess the number.")
+
         guess = int(input("Make a guess: "))
-        if guess == random_number:
-            is_guessed = True
-            print(f"You got it! The answer was {random_number}.")
-        elif guess > random_number:
-            print("Too high.")
-        elif guess < random_number:
-            print("Too low.")
+        attempts = check_answer(guess, answer, attempts)
 
-        if is_guessed == False and attempts_left > 0:
+        if attempts > 0:
             print("Guess again.")
-
-        if is_guessed == False and attempts_left == 0:
+        elif attempts == 0:
             print("You've run out of guesses.")
-        
+
 while input("Do you want to play the Guessing Game? Type 'y' or 'n': ") == "y":
-    guessing_game()
+    play_game()
